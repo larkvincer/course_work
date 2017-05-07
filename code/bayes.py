@@ -31,3 +31,29 @@ def word_probabilities(counts, total_spams, total_non_spams, k=0.5):
              (spam + k) / (total_spams + 2 * k),
              (non_spam + k) / (total_non_spams + 2 * k))
              for w, (spam, non_spam) in counts.items()] 
+
+def spam_probability(word_probs, message):
+    # get unique tokens
+    message_words = create_tokens(message)
+    # logoriphmic probabilities from message
+    log_prob_if_spam = log_prob_if_not_spam = 0.0
+
+    for word, prob_if_spam, prob_if_not_spam in word_probs:
+
+        # for each word in the message,
+        # add the log probability of seeing it
+        if word in message_words:
+            log_prob_if_spam += math.log(prob_if_spam)
+            log_prob_if_not_spam += math.log(prob_if_not_spam)
+
+        # for each word that's not in the message
+        # add the log probability of _not_ seeing it
+        else:
+            log_prob_if_spam += math.log(1.0 - prob_if_spam)
+            log_prob_if_not_spam += math.log(1.0 - prob_if_not_spam)
+
+    # get rid of logoriphm
+    prob_if_spam = math.exp(log_prob_if_spam)
+    prob_if_not_spam = math.exp(log_prob_if_not_spam)
+
+    return prob_if_spam / (prob_if_spam + prob_if_not_spam)
