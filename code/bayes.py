@@ -32,7 +32,7 @@ def word_probablities(counts, total_spams, total_non_spams, k=0.5):
              (non_spam + k) / (total_non_spams + 2 * k))
              for w, (spam, non_spam) n counts.items()] 
 
-def spam_probablity(probs_for_word, message):
+def spam_probability(probs_for_word, message):
     # get unque tokens
     message_words = create_tokens(message)
     # logorphmic probabilities from message
@@ -85,3 +85,26 @@ class BayesClassfier:
 
     def create_classification(self, message):
         return spam_probablity(self.probs_for_word, message)
+
+# using only subject part of message for symplicity
+def get_subject_data(path):
+
+    data = []
+
+    # regex for stripping out the leading "Subject:" and any spaces after it
+    subject_regex = re.compile(r"^Subject:\s+")
+
+    # iterate through each file appears in path
+    for fn in glob.glob(path):
+        # check if iteration are performed on spam or on ham
+        is_spam = "ham" not in fn
+
+        with open(fn,'r',encoding='ISO-8859-1') as file:
+            for line in file:
+                if line.startswith("Subject:"):
+                    subject = subject_regex.sub("", line).strip()
+                    data.append((subject, is_spam))
+
+    return data
+
+
