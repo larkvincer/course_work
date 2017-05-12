@@ -1,8 +1,8 @@
 from collectons import Counter, defaultdict
-mport math
-mport random
-mport re
-mport glob
+import math
+import random
+import re
+import glob
 
 def create_tokens(message):
     # convert to lower case
@@ -99,7 +99,7 @@ def get_subject_data(path):
         # check if iteration are performed on spam or on ham
         is_spam = "ham" not in fn
 
-        with open(fn,'r',encoding='ISO-8859-1') as file:
+        with open(fn,'r') as file:
             for line in file:
                 if line.startswith("Subject:"):
                     subject = subject_regex.sub("", line).strip()
